@@ -1,0 +1,41 @@
+networks:
+  book-svc-network:
+    driver: bridge
+volumes:
+  app_data:
+services:
+  app:
+    build:
+      context: ./
+    container_name: app
+    networks:
+      - book-svc-network
+    depends_on:
+      - db
+    environment:
+      - POSTGRES_USER=$YOUR_USERNAME
+      - POSTGRES_PASSWORD=$YOUR_PASSWORD
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/$YOUR_DB_NAME
+      - SPRING_DATASOURCE_USERNAME=$YOUR_USERNAME
+      - SPRING_DATASOURCE_PASSWORD=$YOUR_PASSWORD
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    ports:
+      - "8082:8081"
+    healthcheck:
+        # use CMD-SHELL so we can do a simple curl and check exit code
+        test: [ "CMD-SHELL", "curl -f http://localhost:8082/ || exit 1" ]
+        interval: 30s      # how often to run
+        timeout: 5s        # fail if no response in 5s
+        retries: 3         # mark unhealthy after 3 failures
+        start_period: 30s  # give app 30s to start before checking
+  db:
+    image: postgres
+    container_name: db
+    networks:
+      - book-svc-network
+    environment:
+      - POSTGRES_USER=$YOUR_USERNAME
+      - POSTGRES_PASSWORD=$YOUR_PASSWORD
+      - POSTGRES_DB=$YOUR_DB_NAME
+    ports:
+      - "5433:5432"
