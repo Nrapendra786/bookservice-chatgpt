@@ -66,18 +66,24 @@
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/codemining.deps/com.fasterxml.jackson.databind -->
-		<dependency>
-			<groupId>com.liferay</groupId>
-			<artifactId>com.fasterxml.jackson.databind</artifactId>
-			<version>2.10.5.1.LIFERAY-PATCHED-1</version>
-			<scope>runtime</scope>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>com.liferay</groupId>-->
+<!--			<artifactId>com.fasterxml.jackson.databind</artifactId>-->
+<!--			<version>2.10.5.1.LIFERAY-PATCHED-1</version>-->
+<!--			<scope>runtime</scope>-->
+<!--		</dependency>-->
 
-		<!-- optional, only if you still don't get Jackson via web starter -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
+			<version>2.20.1</version>
 		</dependency>
+
+		<!-- optional, only if you still don't get Jackson via web starter -->
+<!--		<dependency>-->
+<!--			<groupId>com.fasterxml.jackson.core</groupId>-->
+<!--			<artifactId>jackson-databind</artifactId>-->
+<!--		</dependency>-->
 
 		<!-- TEST -->
 		<dependency>
