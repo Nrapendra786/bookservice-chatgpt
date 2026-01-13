@@ -1,37 +1,3 @@
-## ---- Build stage ----
-#FROM maven:3.9.9-eclipse-temurin-21 AS builder
-#
-#WORKDIR /app
-#
-## Only copy pom.xml first to leverage Docker layer caching
-#COPY pom.xml .
-#RUN mvn -DskipTests dependency:go-offline
-#
-## Now copy sources
-#COPY src ./src
-#
-## Build the application
-#RUN mvn -B -DskipTests package
-#
-## ---- Runtime stage ----
-#FROM eclipse-temurin:21-jre
-#
-#WORKDIR /app
-#
-## Copy fat jar from builder
-#COPY --from=builder /app/target/*.jar app.jar
-#
-## Run as non-root
-#USER 1000:1000
-#
-#EXPOSE 8080
-#
-#ENV JAVA_OPTS=""
-#
-#ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
-
-# syntax=docker/dockerfile:1
-
 # ---- Build stage ----
 FROM maven:3.9.9-eclipse-temurin-21 AS builder
 WORKDIR /app
