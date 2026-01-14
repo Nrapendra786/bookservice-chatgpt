@@ -6,7 +6,7 @@ on:
 
 env:
   AWS_REGION: eu-central-1                   # your region
-  AWS_ACCOUNT_ID: 123456789012               # your AWS account ID
+  AWS_ACCOUNT_ID: 318662118358               # your AWS account ID
   ECR_REPOSITORY: booksvc-chatgpt-repo       # your ECR repo name
   IMAGE_TAG: ${{ github.sha }}               # or 'latest' etc.
 
