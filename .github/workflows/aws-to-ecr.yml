@@ -26,15 +26,17 @@ jobs:
         run: |
           set -euo pipefail
           resp=$(curl -sSf -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-            "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=sts.amazonaws.com")
+          "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=sts.amazonaws.com")
           jwt=$(echo "$resp" | jq -r '.value')
 
-          # decode JWT payload (base64url) safely
-          payload=$(echo "$jwt" | cut -d '.' -f2 | tr '_-' '/+')
-          pad=$(( (4 - ${#payload} % 4) % 4 ))
-          payload="${payload}$(printf '=%.0s' $(seq 1 $pad))"
-
-          echo "$payload" | base64 -d | jq '{aud, sub, repository, ref}'  
+          JWT="$jwt" python3 - <<'PY'
+          import os, json, base64
+          jwt = os.environ["JWT"]
+          payload = jwt.split(".")[1]
+          payload += "=" * (-len(payload) % 4)          # pad
+          claims = json.loads(base64.urlsafe_b64decode(payload).decode())
+          print(json.dumps({k: claims.get(k) for k in ["aud","sub","repository","ref"]}, indent=2))
+          PY
 
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
