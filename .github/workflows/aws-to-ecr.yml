@@ -22,6 +22,20 @@ jobs:
       - name: Checkout source
         uses: actions/checkout@v4
 
+      - name: Debug OIDC claims (prints aud/sub only)
+        run: |
+          set -euo pipefail
+          resp=$(curl -sSf -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+            "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=sts.amazonaws.com")
+          jwt=$(echo "$resp" | jq -r '.value')
+
+          # decode JWT payload (base64url) safely
+          payload=$(echo "$jwt" | cut -d '.' -f2 | tr '_-' '/+')
+          pad=$(( (4 - ${#payload} % 4) % 4 ))
+          payload="${payload}$(printf '=%.0s' $(seq 1 $pad))"
+
+          echo "$payload" | base64 -d | jq '{aud, sub, repository, ref}'  
+
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
         with:
